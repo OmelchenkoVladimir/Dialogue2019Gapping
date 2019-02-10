@@ -20,18 +20,24 @@ class BaseSolution():
         if (mode == 'binary'):
             res = []
             for description, solution in solutions:
-                tmp_metrics = binary_metrics(data['valid']['class'], solution['class'])
+                solution.fit(data['train'])
+                sol_res = solution.predict(data['valid'])
+                tmp_metrics = binary_metrics(data['valid']['class'], sol_res['class'])
                 res.append((description, tmp_metrics))
             return res
         if (mode == 'gapping'):
             res = []
             for description, solution in solutions:
-                tmp_metrics = gapping_metrics(data['valid'], solution, resolution=False)
+                solution.fit(data['train'])
+                sol_res = solution.predict(data['valid'])
+                tmp_metrics = gapping_metrics(data['valid'], sol_res, resolution=False)
                 res.append((description, tmp_metrics))
             return res
         if (mode == 'full'):
             res = []
             for description, solution in solutions:
-                tmp_metrics = gapping_metrics(data['valid'], solution, resolution=True)
+                solution.fit(data['train'])
+                sol_res = solution.predict(data['valid'])
+                tmp_metrics = gapping_metrics(data['valid'], sol_res, resolution=True)
                 res.append((description, tmp_metrics))
             return res
