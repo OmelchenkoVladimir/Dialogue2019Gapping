@@ -1,12 +1,13 @@
 import numpy as np
 import pandas as pd
+import csv
 
 
 def load_part(part, path='gapping/'):
     if part == 'train':
-        return pd.read_csv(path+'train.csv', sep='\t')
+        return pd.read_csv(path+'train.csv', sep='\t', quoting=csv.QUOTE_NONE).fillna('')
     elif part == 'dev' or part == 'valid':
-        return pd.read_csv(path+'dev.csv', sep='\t')
+        return pd.read_csv(path+'dev.csv', sep='\t', quoting=csv.QUOTE_NONE).fillna('')
     else:
         raise NotImplementedError
 

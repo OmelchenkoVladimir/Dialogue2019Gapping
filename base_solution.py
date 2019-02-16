@@ -30,7 +30,8 @@ class BaseSolution():
             for description, solution in solutions:
                 solution.fit(data['train'])
                 sol_res = solution.predict(data['valid'])
-                tmp_metrics = gapping_metrics(data['valid'], sol_res, resolution=False)
+                sol_res.to_csv('debug/res.csv')
+                tmp_metrics = gapping_metrics(data['valid'], sol_res, resolution=True)
                 res.append((description, tmp_metrics))
             return res
         if (mode == 'full'):
@@ -38,6 +39,6 @@ class BaseSolution():
             for description, solution in solutions:
                 solution.fit(data['train'])
                 sol_res = solution.predict(data['valid'])
-                tmp_metrics = gapping_metrics(data['valid'], sol_res, resolution=True)
+                tmp_metrics = gapping_metrics(data['valid'], sol_res, resolution=False)
                 res.append((description, tmp_metrics))
             return res
