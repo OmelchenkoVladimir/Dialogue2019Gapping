@@ -5,7 +5,7 @@ from extra import check_verb_in_tags
 
 def top_layer(sent, tokenizer, model, sentence_tokenizer, morph, threshold=10):
     # на вход - предложение, токенизатор, модель, threshold, токенизатор для предложений (BasicTokenizer)
-    sent = sent.replace('й', 'и').replace('ё', 'е')
+    sent = sent.replace('й', 'и').replace('ё', 'е').lower()
     tok_sent = tokenizer.tokenize(sent)
     tok_verb_sent = sentence_tokenizer.tokenize(sent)
     verb_list = [word for word in tok_verb_sent if check_verb_in_tags(word, morph) == 'VERB']

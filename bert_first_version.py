@@ -21,7 +21,7 @@ class BertFirstSolution(BaseEstimator):
     def predict(self, valid):
         valid_applied = valid.apply(pandas_top_layer, args=(self.tokenizer, self.model, self.sentence_tokenizer, self.morph, self.threshold), axis = 1)
         res = valid_applied[['text', 'res_class', 'res_cV', 'res_V']].rename({'res_class':'class', 'res_cV':'cV', 'res_V':'V'}, axis = 1)
-        res.to_csv('bert/bert_first.csv')
+        res.to_csv('bert/bert_first_5.csv')
         return res
 
 
@@ -31,7 +31,7 @@ class BertFirst(BaseSolution):
         model.eval()
         tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
         sentence_tokenizer = BasicTokenizer()
-        threshold = 10 # default, будет гиперпараметром из config'а
+        threshold = 5 # default, будет гиперпараметром из config'а
         sol = BertFirstSolution(tokenizer, model, sentence_tokenizer, threshold)
         return [(sol.get_params(), sol)]
 
