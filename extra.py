@@ -1,8 +1,4 @@
-import pymorphy2
-
-
-def check_verb_in_tags(word):
-    morph = pymorphy2.MorphAnalyzer()
+def check_verb_in_tags(word, morph):
     tags = set([x.tag.POS for x in morph.parse(word.lower())])
     if ('VERB' in tags) or ('PRTS' in tags) or ('INFN' in tags) or ('PRED' in tags) or ('GRND' in tags) or ('ADJS' in tags):
         return 'VERB'
