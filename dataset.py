@@ -8,6 +8,8 @@ def load_part(part, path='gapping/'):
         return pd.read_csv(path+'train.csv', sep='\t', quoting=csv.QUOTE_NONE).fillna('')
     elif part == 'dev' or part == 'valid':
         return pd.read_csv(path+'dev.csv', sep='\t', quoting=csv.QUOTE_NONE).fillna('')
+    elif part == 'test':
+        return pd.read_csv(path+'test.csv', sep='\t', quoting=csv.QUOTE_NONE).fillna('')
     else:
         raise NotImplementedError
 

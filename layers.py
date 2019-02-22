@@ -7,10 +7,10 @@ def top_layer(sent, tokenizer, model, sentence_tokenizer, morph, threshold=10):
     # на вход - предложение, токенизатор, модель, threshold, токенизатор для предложений (BasicTokenizer)
     search_sent = sent.lower()
     tok_sent = [x for x in tokenizer.tokenize(sent) if x not in ['"', "'", '-', '—', '«', '»', '(', ')', '[UNK]']]  # TODO: убрать дублирование кода
-    print(tok_sent)
     tok_verb_sent = sentence_tokenizer.tokenize(search_sent)
+    print(tok_verb_sent)
     verb_list = [word for word in tok_verb_sent if check_verb_in_tags(word, morph) == 'VERB']
-    for verb in verb_list:
+    for verb in verb_list[-1::-1]:
         verb_pos = search_sent.rfind(verb)
         tok_prefix = [x for x in tokenizer.tokenize(sent[:(verb_pos+len(verb))]) if x not in ['"', "'", '-', '—', '«', '»', '(', ')', '[UNK]']]  # TODO: возможно, убрать дублирование кода
         index = len(tok_prefix) + 1
@@ -45,9 +45,21 @@ def middle_layer(tok_sent, verb, tokenizer, index, model, threshold, sent, morph
                 tmp = sent.lower().rfind(verb)  # TODO: по сути это search_sent, следить за дублированием кода
                 cV_pos = f"{tmp}:{tmp + len(verb)}"
     for elem in V_pos: # TODO: реализовать быстрый (и правильный) поиск позиции слова
-        if (elem != len(tok_sent)):
-            tmp = sent.rfind(first_word(tok_sent[elem:]))
-            V_pos_res += f"{tmp}:{tmp} "
+        next_word = first_word(tok_sent[elem:])
+        cv_ind = int(cV_pos.split(':')[1])
+        rpos = sent[cv_ind:].rfind(next_word) + cv_ind
+        lpos = sent[cv_ind:].find(next_word) + cv_ind
+        if (lpos == rpos):
+            pos = lpos
+        else:
+            prev_word = join_words(tok_sent[:elem])
+            prev_rpos = sent[cv_ind:].rfind(prev_word) + cv_ind
+            prev_lpos = sent[cv_ind:].find(prev_word) + cv_ind
+            close_pos = prev_rpos + len(prev_word)
+            pos = sent[close_pos:].find(next_word) + close_pos
+            if pos == -1:
+                pos = sent[(prev_lpos + len(prev_word)):].find(next_word) + (prev_lpos + len(prev_word))
+        V_pos_res += f"{pos}:{pos} "
     return is_gapping, cV_pos, V_pos_res
 
 
@@ -61,7 +73,7 @@ def bottom_layer(tok_sent, verb_list, tokenizer, index, model, threshold, morph)
         num_tokens = len(verb)
         for i in range(index+2, len(tok_sent)):
             if tok_sent[i].isalpha() or tok_sent[i].isdigit():
-                if (join_words(tok_sent[:i]).isalpha()) and (check_word_pos(join_words(tok_sent[:i]), morph)):
+                if (((join_words(tok_sent[:i]).isalpha() or join_words(tok_sent[:i]).isdigit()) and (check_word_pos(join_words(tok_sent[:i]), morph))) or (join_words(tok_sent[:i]) in ['%', 'то'])) and (join_words(tok_sent[:i]) != 'частности'):
                     new_tok = tok_sent.copy()
                     # тогда перед этим всем вставляем num_tokens токенов
                     for _ in range(num_tokens):

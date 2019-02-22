@@ -28,7 +28,7 @@ def join_words(words):
     for word in words[-1::-1]:
         if word.startswith('##'):
             res = word[2:] + res
-        elif word.isalpha():
+        elif word.isalpha() or word.isdigit():
             return word + res
         else:
             return word
@@ -42,7 +42,7 @@ def check_word_pos(word, morph):
 def first_word(words):
     res = ""
     for word in words:
-        if word.isalpha():
+        if word.isalpha() or word.isdigit():
             if res == "":
                 res = word
             else:

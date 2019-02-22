@@ -21,7 +21,7 @@ class BertSecondSolution(BaseEstimator):
     def predict(self, valid):
         valid_applied = valid.apply(pandas_top_layer, args=(self.tokenizer, self.model, self.sentence_tokenizer, self.morph, self.threshold), axis = 1)
         res = valid_applied[['text', 'res_class', 'res_cV', 'res_V']].rename({'res_class':'class', 'res_cV':'cV', 'res_V':'V'}, axis = 1)
-        res.to_csv('bert/-----.csv')
+        res.to_csv('bert/bert_second_fixed_10_lr.csv')
         return res
 
 
@@ -32,11 +32,12 @@ class BertSecond(BaseSolution):
         model.to('cuda')
         tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased', do_lower_case=False)
         sentence_tokenizer = BasicTokenizer(do_lower_case=False)
-        threshold = 25 # default, будет гиперпараметром из config'а
+        threshold = 10 # default, будет гиперпараметром из config'а
         sol = BertSecondSolution(tokenizer, model, sentence_tokenizer, threshold)
         return [(sol.get_params(), sol)]
 
 
 if __name__ == '__main__':
     clf = BertSecond()
-    clf.score_solutions(mode='gapping')
+    #clf.score_solutions(mode='gapping')
+    clf.predict_test()
