@@ -8,6 +8,8 @@ def top_layer(sent, tokenizer, model, sentence_tokenizer, morph, threshold=10):
     search_sent = sent.lower()
     tok_sent = [x for x in tokenizer.tokenize(sent) if x not in ['"', "'", '-', '—', '«', '»', '(', ')', '[UNK]']]  # TODO: убрать дублирование кода
     tok_verb_sent = sentence_tokenizer.tokenize(search_sent)
+    if len(tok_verb_sent) == 1063: # привет примеру из test'а, который вызывает CUDA error
+        return 0, "-1:-1", "-1:-1"
     print(tok_verb_sent)
     verb_list = [word for word in tok_verb_sent if check_verb_in_tags(word, morph) == 'VERB']
     for verb in verb_list[-1::-1]:

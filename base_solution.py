@@ -47,7 +47,7 @@ class BaseSolution():
         solutions = self.create_solutions()
         data = dataset.load_df(('train', 'valid', 'test'))
         assert len(solutions) == 1
-        for solution in solutions:
+        for _, solution in solutions:
             solution.fit(data['train'])
-            res = solution.predict(data['valid']) #  сменить на тест
-            res.to_csv('results/res.csv', index=None, sep='\t')
+            res = solution.predict(data['test'])
+            res.to_csv('results/result.csv', index=None, sep='\t')
